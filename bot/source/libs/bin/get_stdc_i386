@@ -1,0 +1,4 @@
+#wget http://ru.archive.ubuntu.com/ubuntu/pool/universe/g/gcc-4.3/libstdc++6-4.3-dev_4.3.5-3ubuntu1_amd64.deb
+#wget http://ru.archive.ubuntu.com/ubuntu/pool/universe/g/gcc-4.3/libstdc++6-4.3-dev_4.3.5-3ubuntu1_i386.deb
+#wget http://ru.archive.ubuntu.com/ubuntu/pool/universe/g/gcc-4.5/libstdc++6-4.5-dev_4.5.1-7ubuntu2
+wget http://ru.archive.ubuntu.com/ubuntu/pool/main/g/gcc-4.5/libstdc++6-4.5-dev_4.5.1-7ubuntu2_i386.deb

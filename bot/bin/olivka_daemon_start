@@ -1,0 +1,13 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          olivka_daemon_start
+# Required-Start:    $all
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Run olivka_daemon
+### END INIT INFO
+
+echo "Starting OLIVKA daemon..."
+su -c "nice -n 19 nohup /home/olivka/bot/bin/olivka_daemon &" olivka
+

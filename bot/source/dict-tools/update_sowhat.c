@@ -1,0 +1,93 @@
+#include "../defines.h"
+#include "../dates.h"
+
+bool dconvert(const char *dictFilePath)
+{
+	DATE_INFOex diex;
+	DATE_INFO di;
+	DATE_INFO_HEADER dih;
+
+	FILE *dictionary;
+	FILE *dictionaryW;
+
+	char dictFilePathW[1024];
+	sprintf(dictFilePathW, "%s.v2", dictFilePath);
+
+	dictionary = fopen(dictFilePath, "rb");
+	dictionaryW = fopen(dictFilePathW, "wb");
+
+	if (!dictionary || !dictionaryW)
+		return false;
+		
+	fread(&dih, sizeof (DATE_INFO_HEADER), 1, dictionary);
+	fwrite(&dih, sizeof (DATE_INFO_HEADER), 1, dictionaryW);
+	
+	time_t now = time(0);
+
+	while (fread(&diex, sizeof (DATE_INFOex), 1, dictionary) == 1)
+	{
+		memset(&di, 0, sizeof(DATE_INFO));
+		di.id  = diex.id;
+		di.day  = diex.day;
+		di.month  = diex.month;
+		di.weekDay  = diex.weekDay;
+		di.year  = diex.year;
+		di.type  = diex.type;
+		di.created = now;
+		strcpy(di.text, diex.text);
+		strcpy(di.nick, "n/a");
+		fwrite(&di, sizeof (DATE_INFO), 1, dictionaryW);
+	}
+
+	fclose(dictionary);
+	fclose(dictionaryW);
+
+	return true;
+}
+
+/*
+bool dump(const char *dictFilePath)
+{
+	DICT2_ENTRY de;
+	FILE *dictionary;
+	int cnt = 0;
+
+	dictionary = fopen(dictFilePath, "rb");
+
+	if (!dictionary)
+	{
+		printf("No items");
+		return false;
+	}
+
+	while (fread(&de, sizeof (DICT2_ENTRY), 1, dictionary) == 1)
+	{
+		cnt++;
+		// <tr><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td></tr>
+		//printf("%s %s\n", de.source, de.target);
+		printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", cnt, de.source, de.target, de.nick, de.target_o, de.nick_o);
+	}
+
+	fclose(dictionary);
+
+	return true;
+}
+*/
+
+int main()
+{
+	time_t now = time(0);
+	struct tm *nowt = localtime(&now);
+	printf("1: %s\n", asctime(nowt));
+	printf("2: %s\n", ctime(&now));
+	return 0;
+//	dconvert(CDICT_RUSSIAN_ENGLISH);
+//	dconvert(CDICT_ENGLISH_RUSSIAN);
+
+dconvert(DATES_FILE_PATH);
+
+//	dump(CDICT_RUSSIAN_ENGLISH);
+//	dump(CDICT_ENGLISH_RUSSIAN);
+	
+	return 0;
+}

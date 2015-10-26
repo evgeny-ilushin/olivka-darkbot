@@ -1,0 +1,1 @@
+char *nocrlf(char *src);

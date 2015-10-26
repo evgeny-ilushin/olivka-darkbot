@@ -1,0 +1,34 @@
+#!/bin/bash
+
+START_SEC=5
+WAIT_SEC=10
+
+
+sleep $START_SEC
+
+now=`date`
+echo "$now  Starting OLIVKA loop..."  >> /home/olivka/bot/logs/daemon_stdout.log
+
+
+while [ true ]; do
+
+pppStat=`ps U olivka | grep \/home\/olivka\/bot\/olivka | grep -v grep`
+
+if [ -z "$pppStat" ]; then
+
+now=`date`
+
+echo "$now  OLIVKA: forcing restart..."  >> /home/olivka/bot/logs/daemon_stdout.log
+
+cd /home/olivka/bot
+/home/olivka/bot/olivka >> /home/olivka/bot/logs/daemon_stdout.log
+sleep $START_SEC
+
+fi
+
+#echo "$now OK [$pppStat]"  >> /home/olivka/bot/logs/daemon_stdout.log
+
+sleep $WAIT_SEC
+
+
+done

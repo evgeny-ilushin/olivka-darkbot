@@ -1,0 +1,9 @@
+#! /bin/sh
+
+cd /home/olivka/bot
+echo "Starting OLIVKA 2.0"
+
+killall -9 olivka
+#su olivka -c "env LC_ALL=ru_RU.cp1251 ./olivka"
+env LC_ALL=ru_RU.cp1251 ./olivka >> logs/stdout.log
+

@@ -2,4 +2,4 @@
 
 cd /home/olivka/bot
 echo "Starting OLIVKA 2.0 on irc.tula.net:6667..."
-su olivka -c "env LC_ALL=ru_RU.cp1251 ./olivka >> logs/stdout.log"
+su olivka -c "env LC_ALL=ru_RU.cp1251 ./olivka 2>&1 >> logs/stdout.log"

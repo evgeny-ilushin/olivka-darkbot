@@ -13,15 +13,14 @@
 
 CC = g++
 
-CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -L /usr/lib32/gcc/i686-linux-gnu/4.5
-
+CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -pthread -L /usr/lib32/gcc/i686-linux-gnu/4.5
 DFLAGS = -dm -pg -g -DDEBUG
 
 D2FLAG = -DDEBUG2 -DFORK
 
 EXE_NAME = olivka
 
-ALL_SRC = darkbot.c translate.c dates.c color.c dbtools.cpp smail/sendmail.c seen.cpp
+ALL_SRC = darkbot.c translate.c dates.c color.c dbtools.cpp bc.c bc1.c smail/sendmail.c seen.cpp tg.c
 
 all: ; ${CC} ${CFLAGS} ${ALL_SRC} -o ${EXE_NAME};
 

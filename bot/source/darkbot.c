@@ -40,6 +40,14 @@
 #include "defines.h"
 #include "dbtools.h"
 #include "victorina.h"
+#include "bc.h"
+
+// 2017
+#define TGLOG "/home/olivka/bot/logs/tg.log"
+#include <pthread.h>
+void start_telegram_reader();
+void* telegram_reader(void *arg);
+pthread_t ttid;
 
 #include <pthread.h>
 
@@ -76,6 +84,7 @@ void dictLatinList(char *nick, char *chan, char *src);
 int t_topekInfo(char *channel, char *nick);
 int t_topegInfo(char *channel, char *nick);
 int t_glotokInfo(char *channel, char *nick);
+int t_glotokInfoUa(char *channel, char *nick);
 
 int nrand(int);
 
@@ -97,6 +106,7 @@ void verify_kick_protect(char *s2, char *s1, char *s, char *s3);
 // +25/06/2007
 char *s_time(time_t time = 0);
 char time_s[64] = "N/A";
+
 
 #define RNICK_CACHE_TIME 300	// 5 min
 
@@ -377,6 +387,7 @@ run_program (const char *input)
 {
 	FILE *read_fp;
 	long chars_read;
+
 	
 	memset(f_tmp, 0, STRING_LONG);
 	read_fp = popen (input, "r");
@@ -442,6 +453,7 @@ check_dbtimers ()
 
 
 // Addons
+#include "tg.h"
 #include "vera.h"
 #include "translate.h"
 #include "color.h"
@@ -1005,6 +1017,15 @@ get_rand_nick (const char *chan)
     __get_rand_nick(chan);
     if (strlen(f_tmp) <= 1)
 	strcpy(f_tmp, "ChanServ");
+
+    // 2018 - add tg nicks
+    if (stricmp(f_tmp, "tg") == 0 || stricmp(f_tmp, "√радуснег") == 0 || nrand(7) == 5)
+    {
+	char *rn2[] = { "@Alexeyushko1", "@Maks", "@s_e_r_d_j", "@sanhome" , "@mity_f" , "@Evejiny" , "@echobyte" , "@Trancer2d" , "@Undcon" , "@Nick_BASSMAN", "@Maks" };
+	int rnx2 = nrand(10);
+	strcpy(f_tmp, rn2[rnx2]);
+    }
+
     strncpy(g_rnick_cache, f_tmp, 1023);
     g_lnow = _now;
     return f_tmp;
@@ -1246,6 +1267,36 @@ S (const char *format, ...)
 	va_start (arglist, format);
 	vsprintf (b, format, arglist);
 	va_end (arglist);
+
+	bc_update("olivka", b);
+	bc1_update("olivka", b);
+
+// Telegram echo - 2017
+// tgecho.sh
+/*
+if (!strncmp(b, "PRIVMSG #irc", 12))
+{
+    //S ("PRIVMSG ncuxonycbka :<olivka> %s\n", b+13);
+    char temp1[10240];
+    snprintf (temp1,sizeof(temp1), "/home/olivka/bot/tgecho.sh \"&lt;<b>olivka</b>&gt; %s\"", b+14);
+    const char *res = run_program(temp1);
+    return;
+}
+*/
+// Reply to TG;
+if (!strncmp(b, "PRIVMSG #telegram", 17) && TG_REPLY)
+{
+    //S ("PRIVMSG ncuxonycbka :<olivka> %s\n", b+13);
+    char temp1[10240];
+    //snprintf (temp1,sizeof(temp1), "/home/olivka/bot/tgecho.sh \"&lt;<b>olivka</b>&gt; %s\"", b+19);
+    snprintf (temp1,sizeof(temp1), "/home/olivka/bot/tgecho.sh \"%s\"", b+19);
+    const char *res = run_program(temp1);
+    TG_REPLY = 0;
+    return;
+}
+///
+
+
 	
 	if (send_tog == 0) {
 		send_tog = 1;
@@ -2890,10 +2941,25 @@ delete_url (const char *nick, char *topic, char *target)
 		L030 (target, nick, topic);
 }
 
+void chanserv_log_history(char *source, char *target, char *buf);
+
 void
 chanserv (char *source, char *target, char *buf)
 {
+	// 2017 Telegram replies
+	substituteTgMessage(source, target, buf);
+
+	// 2018
+	chanserv_log_history(source, target, buf);
+
 	// :)
+/*
+   printf("Finally:\n");
+   printf(" # source: %s\n", source);
+    printf(" # target: %s\n", target);
+    printf(" # buf: %s\n\n", buf);
+*/
+
 	int g_pwLen = 3 + nrand(2)*nrand(6) + nrand(2);
 	
 	int id;
@@ -2931,11 +2997,41 @@ chanserv (char *source, char *target, char *buf)
 	}
 
 // No Chan1
+//printf("1: T:%s, S:%s, BC:%s\n", target, source, bufCopy);
+//fflush(stdout);
 
 	if (*target == '#')
 	{
+		// COUNT xyu & chars
+		if (bc_update(source, bufCopy+1) == 0)
+		{
+		    S("NOTICE %s :punishing %s (over %d entries - surcharge %d points)\n", target, source, BC_MAX_ONCE, BC_PUNISH);
+		}
+		if (bc1_update(source, bufCopy+1) == 0)
+		{
+		    //S("NOTICE %s :punishing %s (over %d entries - surcharge %d points)\n", target, source, BC_MAX_ONCE, BC_PUNISH);
+		}
+//printf("2: T:%s, S:%s, BC:%s\n", target, source, bufCopy);
+
+// Telegram echo - 2017
+// tgecho.sh
+
+if (!strcmp(target, "#irc") && TG_REPLY)
+{
+    //S ("PRIVMSG ncuxonycbka :<%s> %s\n", source, bufCopy+1);
+    char temp1[10240];
+    snprintf (temp1,sizeof(temp1), "/home/olivka/bot/tgecho.sh \"&lt;<b>%s</b>&gt; %s\"", source, bufCopy+1);
+    const char *res = run_program(temp1);
+}
+
+///
+
 	    if (isNoChan1(target))
 	    {
+		    // MAT check
+		//bc_update(source, bufCopy+1);
+//printf("3: T:%s, S:%s, BC:%s\n", target, source, bufCopy);
+
 		  // URL check
 		  url_cache uc(UCN);
 		  URL uu, uu2;
@@ -2948,7 +3044,12 @@ chanserv (char *source, char *target, char *buf)
 				// Ignore some :)
 //int aaa=stricmp(uu.href, "http://temp.2396.ru/");
 //S ("PRIVMSG zloy :S: [%s] [%s] [%d] [%s]\n", bufCopy, uu.href, aaa, uu2.href);
-				if (stricmp(uu2.href, "http://temp.2396.ru/") == 0)
+				if (strstr(uu2.href, "http://temp.2396.ru/") != NULL)
+				    return;
+				if (strstr(uu2.href, "http://newtemp.redip.ru/") != NULL)
+				    return;
+				// 2017 - no #ttc chan
+				if (!strcmp(target, "#ttc"))
 				    return;
 		  		S ("PRIVMSG %s :%s, это уже cкурили (%s/%s, %s)\n", target, source, uu2.nick, uu2.chan, nocrlf(ctime(&uu2.date)));
 		  		db_sleep(5);
@@ -4277,6 +4378,9 @@ chanserv (char *source, char *target, char *buf)
 								  else if (stricmp (s, "гудок") == 0 || strcmp(s, "глоток") == 0) {
 									  t_glotokInfo(target, source);
 								  }
+								  else if (stricmp (s, "ковток") == 0) {
+									  t_glotokInfoUa(target, source);
+								  }
 								  else if (stricmp (s, "топек") == 0 || strcmp(s, "топик") == 0) {
 									  t_topekInfo(target, source);
 								  }
@@ -4398,6 +4502,128 @@ chanserv (char *source, char *target, char *buf)
 								  }
 
 
+//  урсы говновалют
+								  else if (stricmp (s, "нефть") == 0 || stricmp (s, "oil") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/oil.sh", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 1)
+									  {
+									    S("PRIVMSG %s :%s, %s\n", target, source, res);
+									    R;
+									  }
+									  sleep(5);
+								  }
+								  else if (stricmp (s, "бакс") == 0 || stricmp (s, "доллар") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/rubl.sh", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 1)
+									  {
+									    S("PRIVMSG %s :%s, %s рос≥йських рубл≥в\n", target, source, res);
+									    R;
+									  }
+									  sleep(5);
+								  }
+								  else if (stricmp (s, "гривна") == 0 || stricmp (s, "грювн€") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/grivna.sh", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 1)
+									  {
+									    S("PRIVMSG %s :%s, %s рос≥йських рубл≥в\n", target, source, res);
+									    R;
+									  }
+									  sleep(5);
+								  }
+								  else if (stricmp (s, "евро") == 0 || stricmp (s, "евра") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/euro.sh", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 1)
+									  {
+									    S("PRIVMSG %s :%s, %s рос≥йських рубл≥в\n", target, source, res);
+									    R;
+									  }
+									  sleep(5);
+								  }
+
+// Matershinnik N
+								  else if (stricmp (s, "fucker") == 0 || stricmp (s, "доход€га") == 0 || stricmp (s, "матершинник") == 0 || stricmp (s, "синеносый") == 0)
+								  {
+								    s2 = strtok (NULL, "");
+								    char *ms2 = s2;
+								    trim(&ms2);
+								    printf("BAD {%s}\n", ms2);
+									  if (ms2 == NULL || strpbrk(s2, ",\t\r\n|\'\"`><&^*?/;:~^"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									else
+									{
+									    char RRR[4096];
+									    bc1_infoU(ms2, RRR);
+									    S ("PRIVMSG %s :%s, %s\n", target, source, RRR);
+									}
+								}
+
+								  else if (stricmp (s, "wanker") == 0 || stricmp (s, "шулер") == 0)
+								  {
+								    s2 = strtok (NULL, "");
+									  if (s2 == NULL || strpbrk(s2, ", \t\r\n|\'\"`><&^*?/;:~^"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									else
+									{
+									    char RRR[4096];
+									    bc_infoU(s2, RRR);
+									    S ("PRIVMSG %s :%s, %s\n", target, source, RRR);
+									}
+								}
+
+// Game
+								  else if (stricmp (s, "вращаю") == 0 || stricmp (s, "кручу") == 0 || stricmp (s, "ставлю") == 0 || stricmp (s, "поиграем") == 0 || stricmp (s, "играю") == 0)
+								  {
+								    s2 = strtok (NULL, "");
+								    if (s2 != 0)
+								    {
+								    long sum = atol(s2);
+								    
+									  if (sum < 1 || sum > 10000)
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									else
+									{
+									    int res = bc_dice(source, sum);
+									    if (res == 0)
+										S ("PRIVMSG %s :%s, лови +%d\n", target, source, sum);
+									    else if (res == 1)
+										S ("PRIVMSG %s :%s, ты проиграл %d\n", target, source, sum);
+									    else if (res == 2)
+										do_randomtopic(target, DONNO_RDB, source, buf);
+									}
+								    }
+								    else
+									do_randomtopic(target, DONNO_RDB, source, buf);
+								}
+
 // PING!
 								  else if (stricmp (s, "ping") == 0 || stricmp (s, "пинг") == 0)
 								  {
@@ -4429,6 +4655,30 @@ chanserv (char *source, char *target, char *buf)
 										    
 										  R;
 									  }
+									  sleep(5);
+								  }
+
+
+								  else if (stricmp (s, "ебен€") == 0 || stricmp (s, "geoip") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  level = check_access(userhost, target, 0, source);
+
+//									  if (level < 4 || s2 == NULL || strlen (s2) > 40 || strpbrk(s2, ", \t\r\n|\'\"><&^*?;:"))
+									  if (s2 == NULL || strlen(s2) < 3 || strpbrk(s2, ", \t\r\n|\'\"`><&^*?/;:~^"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									  snprintf (temp,sizeof(temp), "geoiplookup %s | head -n 1", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 10)
+									  {
+											S("PRIVMSG %s :\2%s\2, %s\n", target, source, res);
+									  }
+									    else do_randomtopic(target, DONNO_RDB, source, buf);
 									  sleep(5);
 								  }
 
@@ -5231,13 +5481,32 @@ chanserv (char *source, char *target, char *buf)
 										  while (0);
 									  }
 								  else
+								    // 2017 Aug - hebrew
+									  if (stricmp (s, "жиды") == 0 || stricmp (s, "евреи") == 0)
+									  {
+										  do
+										  {
+											  {
+												  snprintf (temp,sizeof(temp), "/home/olivka/bot/heb.sh\n");
+												  const char *res = run_program(temp);
+												  if (strlen(res) > 6)
+												  {
+													  S("PRIVMSG %s :%s, %s\n", target, source, res);
+													  break;
+												  }
+											  }
+											  do_randomtopic(target, DONNO_RDB, source, buf);
+										  }
+										  while (0);
+									  }
+								  else
 									  // —ледующий
 									  if (stricmp (s, "следующий") == 0)
 									  {
 										  do
 										  {
 											  // NON-FREE :-/
-											  if (check_access (userhost, target, 0, source) >= ADMIN_LEVEL)
+											  //if (check_access (userhost, target, 0, source) >= ADMIN_LEVEL)
 											  {
 												  g_lnow = 0; //time(0)-RNICK_CACHE_TIME;
 												  S("PRIVMSG %s :%s :)\n", target, source);
@@ -5589,7 +5858,9 @@ chanserv (char *source, char *target, char *buf)
 				// Ignore some :)
 //int aaa=stricmp(uu.href, "http://temp.2396.ru/");
 //S ("PRIVMSG zloy :S: [%s] [%s] [%d] [%s]\n", bufCopy, uu.href, aaa, uu2.href);
-				if (stricmp(uu.href, "http://temp.2396.ru/") == 0)
+				if (stricmp(uu.href, "http://temp.2396.ru/") != 0)
+				    return;
+				if (stricmp(uu.href, "http://newtemp.redip.ru/") != 0)
 				    return;
 		  		S ("PRIVMSG %s :%s, это уже курили (%s/%s, %s)\n", target, source, uu2.nick, uu2.chan, nocrlf(ctime(&uu2.date)));
 		  		db_sleep(5);
@@ -6017,6 +6288,12 @@ main (int argc, char **argv)
 #endif
 #ifndef WIN32                   /* not win32 */
 #endif
+
+bc_reset();
+bc1_reset();
+
+// 2017
+start_telegram_reader();
 
 	g_lnow = 0; //time(0)-RNICK_CACHE_TIME;
 	get_s ();
@@ -6588,6 +6865,21 @@ parse (char *line)
 			  fslog (privmsg_log, "[%s] %s %s %s\n", date (), s, s1, s2);
 		  }
 #endif
+
+// Telegram echo - 2017
+// tgecho.sh
+/*
+if (!strcmp(s1, "#irc"))
+{
+    S ("PRIVMSG ncuxonycbka :<%s> %s\n", s, s2);
+    char temp1[10240];
+    snprintf (temp1,sizeof(temp1), "/home/olivka/bot/tgecho.sh \"<%s> %s\"", s, s2);
+    const char *res = run_program(temp1);
+}
+*/
+///
+
+
 		  if (*s1 == '#' || *s1 == '&' || *s1 == '+')
 			  if (do_lastcomm (s, s1, s2)
 				  == 1)
@@ -8047,6 +8339,90 @@ void do_pluginCall(char *target, char *file, char *nick, char *topic)
 	else
 //
 		
+// ћј“ё√»
+/*
+		if (!strcmp(pCommand, "bcx"))
+		{
+		    bc_update(nick, topic);
+		}
+	else
+*/
+		if (!strcmp(pCommand, "bci"))
+		{
+		    char RRR[4096];
+		    bc_info5(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bci10"))
+		{
+		    char RRR[4096];
+		    bc1_info10(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bcf"))
+		{
+		    char RRR[4096];
+		    bc_info5_f(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bcuser"))
+		{
+		    char RRR[4096];
+		    bc_infoU(topic, RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+
+		if (!strcmp(pCommand, "bci1"))
+		{
+		    char RRR[4096];
+		    bc1_info5(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bci101"))
+		{
+		    char RRR[4096];
+		    bc_info10(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bcf1"))
+		{
+		    char RRR[4096];
+		    bc1_info5_f(RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if (!strcmp(pCommand, "bcuser1"))
+		{
+		    char RRR[4096];
+		    bc1_infoU(topic, RRR);
+		    S ("PRIVMSG %s :%s, %s\n", target, nick, RRR);
+		}
+	else
+		if ((!strcmp(pCommand, "sun")))
+		{
+			    char temp[2048];
+			  snprintf (temp,sizeof(temp), "/home/olivka/bot/sun.sh");
+			  const char *res = run_program(temp);
+			  int ll2to = strlen(res);
+			  if (ll2to > 10)
+			  {
+				S("PRIVMSG %s :\2%s\2, %s\n", target, nick, res);
+			  }
+			    else
+			{
+			    do_randomtopic(target, "fuckoff", nick, topic);
+			}
+			
+		}
+	else
+//
+		
 		// "кикбаннах!"
 		if (!strcmp(pCommand, "cbn"))
 		{
@@ -8453,6 +8829,54 @@ int t_glotokInfo(char *channel, char *nick)
     return 0;
 }
 
+int t_glotokInfoUa(char *channel, char *nick)
+{
+    int tm_1_wp = 18;
+    int rm_2_mb = 19;
+    int rm_2_bp = 20;
+    time_t now = time(0);
+    time_t tpk = now;
+    struct tm *t = localtime(&tpk);
+    char ts[3][128];
+
+    for (int i = 18; i <= 20; i++)
+    {
+        t->tm_hour = i;
+	t->tm_min = 0;
+        t->tm_sec = 0;
+	time_t tpk2 = mktime(t);
+        int tDiff = tpk2 - tpk;
+	if (tDiff < 0 && i >= 19)
+        {
+    	    S("PRIVMSG %s :%s, вже давно пора\n", channel, nick);
+    	    return 0;
+	    continue;
+	}
+
+	int hDiff = tDiff/3600;
+	int mDiff = (tDiff-hDiff*3600)/60;
+	int sDiff = tDiff-hDiff*3600-mDiff*60;
+
+printf("hDiff%10: %d -> %d\n", hDiff, hDiff/10);
+printf("mDiff%10: %d -> %d\n", mDiff, mDiff/10);
+fflush(stdout);
+
+	if (hDiff > 0)
+	{
+	    sprintf(ts[i-18], "\2%d %s %d %s\2", hDiff, ((hDiff == 1 || hDiff == 21)? "година":((hDiff == 2 || hDiff == 3 || hDiff == 4)? "години":"годин")), mDiff,
+		((mDiff == 1 || mDiff%10 == 1)? "хвилина":((mDiff%10 == 2 || mDiff%10 == 3 || mDiff%10 == 4)? "хвилини":"хвилин")));
+	}
+	else
+	{
+	    sprintf(ts[i-18], "\2%d %s\2", mDiff,
+		((mDiff == 1 || mDiff%10 == 1)? "хвилина":((mDiff%10 == 2 || mDiff%10 == 3 || mDiff%10 == 4)? "хвилини":"хвилин")));
+//		((mDiff == 1 || mDiff == 21 || mDiff == 31 || mDiff == 41 || mDiff == 51)? "хвилина":((mDiff == 2 || mDiff == 3 || mDiff == 4 || mDiff%10 == 2 || mDiff%10 == 3 || mDiff%10 == 4)? "хвилини":"хвилин")));
+	}
+    }
+    S("PRIVMSG %s :%s, до ковтка залишилось %s\n", channel, nick, ts[1]);
+    return 0;
+}
+
 void dictLatin(char *nick, char *chan, char *src)
 {
 	if (isRuAlpha2(*src))
@@ -8695,3 +9119,116 @@ int sec_sleep(int sec)
     char *res = (char *)run_program(temp);
     return sec;
 }
+
+void start_telegram_reader()
+{
+    int err = pthread_create(&ttid, NULL, &telegram_reader, NULL);
+        if (err != 0)
+            printf("\nCan't create TG thread :[%s]", strerror(err));
+        else
+            printf("\nTG thread created successfully\n");
+}
+
+void* telegram_reader(void *arg)
+{
+    unsigned long i = 0;
+    pthread_t id = pthread_self();
+
+
+#define BUFSZ 1024
+FILE *pipe = popen("tail -f /home/olivka/bot/logs/tg.log", "r");
+    while (1)
+    {
+	printf("123");
+	char buf[4096];
+	int t = fread(buf, 4096, 1, pipe);
+	if (t > 0)
+	{
+	    buf[t] = 0;
+	    printf(buf);
+	    S ("PRIVMSG %s :%s\n", "ncuxonycbka", buf);
+	}
+    }
+}
+
+/*
+int mkpath(char* file_path, mode_t mode) {
+  assert(file_path && *file_path);
+  char* p;
+  for (p=strchr(file_path+1, '/'); p; p=strchr(p+1, '/')) {
+    *p='\0';
+    if (mkdir(file_path, mode)==-1) {
+      if (errno!=EEXIST) { *p='/'; return -1; }
+    }
+    *p='/';
+  }
+  return 0;
+}
+*/
+int mkpath(char *dir, mode_t mode)
+{
+char mkcmd[8000] = "";
+sprintf(mkcmd, "mkdir -p %s", dir);
+system(mkcmd);
+return 0;
+}
+
+void chanserv_log_history(char *source, char *target, char *buf)
+{
+    char t[10240];
+    char ts[1024];
+    time_t now = time (0);
+    strftime (ts, 1023, "%Y-%m-%d %H:%M:%S", localtime (&now));
+    sprintf(t, "%s %s %s %s\n", ts, source, target, buf+1);
+
+
+    // 1
+    FILE *p = fopen("/home/olivka/bot/history/chanserv.log", "a+");
+    if (p == 0)
+    {
+	printf("Error opening cs log\n");
+	return;
+    }    
+    fprintf(p, t);
+    fclose(p);
+
+
+    // 2
+    char di[1024];
+    char ps[1024];
+    char source1[1024];
+    sprintf(di, "/home/olivka/bot/history/%s", target);
+    mkdir(di, 0777);
+    strcpy(source1, source);
+    char *px = strchr(source1, '!');
+    if (px != NULL) {
+	*px = 0;
+    }
+    sprintf(ps, "/home/olivka/bot/history/%s/%s.log", target, source1);
+    p = fopen(ps, "a+");
+    if (p == 0)
+    {
+	printf("Error opening nick log\n");
+	return;
+    }
+    sprintf(t, "%s %s\n", ts, buf+1);
+    fprintf(p, t);
+    fclose(p);
+
+    // 3
+    char tsi[1024];
+    strftime (tsi, 1023, "%Y/%m/%d", localtime (&now));
+    sprintf(di, "/home/olivka/bot/history/%s/%s", target, tsi);
+    printf("Target H: %s\n", di);
+    mkpath(di, 0777);
+    sprintf(ps, "/home/olivka/bot/history/%s/%s/%s.log", target, tsi, source1);
+    p = fopen(ps, "a+");
+    if (p == 0)
+    {
+	printf("Error opening daily nick log\n");
+	return;
+    }
+    fprintf(p, t);
+    fclose(p);
+}
+

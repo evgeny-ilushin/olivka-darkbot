@@ -655,7 +655,7 @@ public:
 					memcpy(ct, ctime2, 8);
 				}
 				else
-					printf("<tr><td><small>%d</small></td><td><small>%s</small></td><td><small>&nbsp;<b>%s</b> at %s</small></td><td>&nbsp;<a href=\"%s\">%s</a></td></tr>\n", ++cnt, ctime1+9, str_ssi(pNick), str_ssi(pChan), pUrl, pUrl);
+					printf("<tr><td><small>%d</small></td><td><small>%s</small></td><td><small>&nbsp;<b>%s</b> at %s</small></td><td>&nbsp;<small><a href=\"%s\">%s</a></small></td></tr>\n", ++cnt, ctime1+9, str_ssi(pNick), str_ssi(pChan), pUrl, pUrl);
 //				printf("<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href=\"%s\">%s</a></td></tr>\n", ++cnt, ctime(&date), str_ssi(pNick), str_ssi(pChan), pUrl, pUrl);
 			}
 			if (cnt <= 0 && !fltStat)

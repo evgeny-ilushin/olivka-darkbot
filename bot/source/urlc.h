@@ -74,6 +74,15 @@ public:
 
 	bool add(LPURL fu)
 	{
+		if (strlen(fu->href) > 19
+&& (
+!strncmp("http://img.vim-cn.com", fu->href, 21)
+|| !strncmp("http://redip.ru/tg/", fu->href, 19)
+|| !strncmp("http://temp.redip.ru", fu->href, 20)
+|| !strncmp("http://newtemp.redip.ru", fu->href, 23)
+))
+		    return false;
+
 		FILE *f = fopen(m_fn, "a+t");
 		do
 		{
@@ -89,6 +98,15 @@ public:
 
 	bool find(char *url, LPURL fu)
 	{
+		if (strlen(url) > 19 
+&& (
+!strncmp("http://img.vim-cn.com", url, 21)
+|| !strncmp("http://redip.ru/tg/", url, 19)
+|| !strncmp("http://temp.redip.ru", fu->href, 20)
+|| !strncmp("http://newtemp.redip.ru", fu->href, 23)
+))
+		    return false;
+
 		FILE *f = fopen(m_fn, "rt");
 		do
 		{
@@ -199,7 +217,7 @@ public:
 			p = strstr(p, "://") + 3;
 			int nc = 0;
 			bool isUrl = false;
-			while (*p && ((*p >= 'a' && *p <= 'z') || (*p >= '0' && *p <= '9') || *p == ',' || *p == '.' || *p == '(' || *p == ')' || *p == '&' || *p == '?' || *p == '-'|| *p == '/'|| *p == '\\' || *p == '%' || *p == '~' || *p == '{' || *p == '}' || *p == '[' || *p == ']' || *p == '_' || *p == '+' || *p == ';' || *p == '='))
+			while (*p && ((*p >= 'a' && *p <= 'z') || (*p >= '0' && *p <= '9') || *p == ',' || *p == '.' || *p == '(' || *p == ')' || *p == '&' || *p == '?' || *p == '-'|| *p == '/'|| *p == '\\' || *p == '%' || *p == '~' || *p == '{' || *p == '}' || *p == '[' || *p == ']' || *p == '_' || *p == '+' || *p == ';' || *p == '=' || *p == ':'))
 			{
 				if (*p == '.' && nc > 1) isUrl = true;
 				nc++;

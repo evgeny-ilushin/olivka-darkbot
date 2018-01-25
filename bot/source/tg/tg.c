@@ -1,0 +1,1 @@
+/home/olivka/bot/source/tg.c

@@ -1,0 +1,3 @@
+rm ./tg_test_subst
+g++ tg.c main.c -o tg_test_subst
+#g++ tg.c -o bc_dump_f

@@ -1,0 +1,2 @@
+g++ bc.c bc_dump.c -o bc_dump
+g++ bc.c bc_dump_f.c -o bc_dump_f

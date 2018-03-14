@@ -4531,6 +4531,20 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 									  }
 									  sleep(5);
 								  }
+								  else if (stricmp (s, "биткоин") == 0 || stricmp (s, "btc") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/btc.sh", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 1)
+									  {
+									    S("PRIVMSG %s :%s, %s\n", target, source, res);
+									    R;
+									  }
+									  sleep(5);
+								  }
 								  else if (stricmp (s, "гривна") == 0 || stricmp (s, "грювня") == 0)
 								  {
 									  s2 = strtok (NULL, "");
@@ -5020,6 +5034,50 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 									  const char *res = run_program(temp);
 									  int ll2to = strlen(res);
 									  if (ll2to > 5)
+									  {
+									    S("PRIVMSG %s :\2%s\2: %s\n", target, source, res);
+									    R;
+									  }
+									  else
+//									    S("PRIVMSG %s :\2%s\2: облом-с\n", target, source);
+									    do_randomtopic(target, DONNO_RDB, source, buf);
+									  sleep(5);
+								  }
+								  
+// Base64
+								  else if (stricmp (s, "закодируй") == 0 || stricmp (s, "зокодируй") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  if (s2 == NULL || strlen(s2) < 3 || strlen(s2) > 1023 || strpbrk(s2, ",\t\r\n|\'\"`^;"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/b64e.sh  %s\n", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 3)
+									  {
+									    S("PRIVMSG %s :\2%s\2: %s\n", target, source, res);
+									    R;
+									  }
+									  else
+//									    S("PRIVMSG %s :\2%s\2: облом-с\n", target, source);
+									    do_randomtopic(target, DONNO_RDB, source, buf);
+									  sleep(5);
+								  }
+								  else if (stricmp (s, "декодируй") == 0 || stricmp (s, "раскодируй") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  if (s2 == NULL || strlen(s2) < 3 || strlen(s2) > 1023 || strpbrk(s2, ",\t\r\n|\'\"`^;"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/b64d.sh  %s\n", s2);
+									  const char *res = run_program(temp);
+									  int ll2to = strlen(res);
+									  if (ll2to > 3)
 									  {
 									    S("PRIVMSG %s :\2%s\2: %s\n", target, source, res);
 									    R;

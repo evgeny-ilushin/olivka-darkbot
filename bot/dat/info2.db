@@ -403,7 +403,9 @@ wer? ^randwho
 кто+крайний? ~randwho
 ну+кто? ^randwho
 КТО? N~, ТЫ!
+А+что+у+* ~seak
 а+что+у+* ~seak
+А+что+еще+у+* ~seak
 а+что+еще+у+* ~seak
 а+что+бывает+* ~seak
 а+что+погубило+* ~seak
@@ -773,3 +775,12 @@ sun $sun
 солнышко $sun
 солныжко $sun
 ч*там*солнцем* $sun
+холодно? $weather
+холодно! $weather
+марос $weather
+w $weather
+wz $weather
+ц $weather
+ця $weather
+завтра $wfcast
+прогноз $wfcast

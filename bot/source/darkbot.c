@@ -1021,7 +1021,7 @@ get_rand_nick (const char *chan)
     // 2018 - add tg nicks
     if (stricmp(f_tmp, "tg") == 0 || stricmp(f_tmp, "Градуснег") == 0 || nrand(7) == 5)
     {
-	char *rn2[] = { "@Alexeyushko1", "@Maks", "@s_e_r_d_j", "@sanhome" , "@mity_f" , "@Evejiny" , "@echobyte" , "@Trancer2d" , "@Undcon" , "@Nick_BASSMAN", "@Maks" };
+	char *rn2[] = { "@Alexeyushko_N", "@Maks", "@s_e_r_d_j", "@sanhome" , "@mity_f" , "@eddmasteredd" , "@echobyte" , "@Trancer2d" , "@Undcon" , "@Nick_BASSMAN", "@Maks" };
 	int rnx2 = nrand(10);
 	strcpy(f_tmp, rn2[rnx2]);
     }
@@ -3244,6 +3244,30 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 			else if (stricmp (cmd, "CHANINFO") == 0) {
 				show_chaninfo (source, target);
 			}
+
+
+        else if (stricmp(cmd, "RU") == 0 || stricmp(cmd, "EN") == 0 || stricmp(cmd, "UA") == 0) {
+        s2 = bufCopy+4;
+            if (s2 == NULL)
+                R;
+
+            wt_trimRight(s2);
+                        if (stricmp(cmd, "EN") == 0) {
+                            snprintf(temp, sizeof(temp), "/home/olivka/bot/2en.sh  %s\n", s2);
+                        } else if (stricmp(cmd, "RU") == 0) {
+                            snprintf(temp, sizeof(temp), "/home/olivka/bot/2ru.sh  %s\n", s2);
+                        } else {
+                            snprintf(temp, sizeof(temp), "/home/olivka/bot/2ua.sh  %s\n", s2);
+                        }
+                        const char *res = run_program(temp);
+                        int ll2to = strlen(res);
+                        if ((ll2to > 5)) {
+                            S("PRIVMSG %s :%s, %s\n", target, source, res);
+                    }
+
+
+        }
+
 			else if (stricmp (cmd, "IDLE") == 0 || stricmp (cmd, "сплюшка") == 0) {
 				s2 = strtok (NULL, " ");
 				if (s2 == NULL)
@@ -4594,7 +4618,7 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 									}
 								}
 
-								  else if (stricmp (s, "wanker") == 0 || stricmp (s, "шулер") == 0)
+								  else if (stricmp (s, "wanker") == 0 || stricmp (s, "шулер") == 0 || stricmp (s, "жулик") == 0)
 								  {
 								    s2 = strtok (NULL, "");
 									  if (s2 == NULL || strpbrk(s2, ", \t\r\n|\'\"`><&^*?/;:~^"))
@@ -5233,6 +5257,59 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 									    t_addWord2(target, source, _s2, s3);
 								  }
 #endif
+
+
+            // 2018 Aug - add Google translate : )
+             else if (stricmp(s, "ru") == 0 || stricmp(s, "rus") == 0) {
+                s2 = strtok(NULL, "");
+
+                if (s2 == NULL)
+                    R;
+
+                if (strlen(s2) > 512)
+                    s2[512] = '\0';
+                wt_trimRight(s2);
+                        snprintf(temp, sizeof(temp), "/home/olivka/bot/2ru.sh  %s\n", s2);
+                        const char *res = run_program(temp);
+                        int ll2to = strlen(res);
+                        if ((ll2to > 5)) {
+                            S("PRIVMSG %s :%s, %s\n", target, source, res);
+                        }
+
+            } else if (stricmp(s, "en") == 0 || stricmp(s, "eng") == 0) {
+                s2 = strtok(NULL, "");
+
+                if (s2 == NULL)
+                    R;
+
+                if (strlen(s2) > 512)
+                    s2[512] = '\0';
+                wt_trimRight(s2);
+                        snprintf(temp, sizeof(temp), "/home/olivka/bot/2en.sh  %s\n", s2);
+                        const char *res = run_program(temp);
+                        int ll2to = strlen(res);
+                        if ((ll2to > 5)) {
+                            S("PRIVMSG %s :%s, %s\n", target, source, res);
+                        }
+            
+            } else if (stricmp(s, "ua") == 0 || stricmp(s, "ukr") == 0) {
+                s2 = strtok(NULL, "");
+
+                if (s2 == NULL)
+                    R;
+
+                if (strlen(s2) > 512)
+                    s2[512] = '\0';
+                wt_trimRight(s2);
+                        snprintf(temp, sizeof(temp), "/home/olivka/bot/2ua.sh  %s\n", s2);
+                        const char *res = run_program(temp);
+                        int ll2to = strlen(res);
+                        if ((ll2to > 5)) {
+                            S("PRIVMSG %s :%s, %s\n", target, source, res);
+                        }
+            }
+
+
 // <!-- SENDMAIL
 								  else if (stricmp (s, "sendmail") == 0 || stricmp (s, "напиши") == 0)
 								  {
@@ -5738,11 +5815,13 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 											  
 											  // </NEW!> 29/03/2006
 											  
+/*
 											  // 13/11/2006
-											  else if (stricmp (s, "погода") == 0 || stricmp (s, "холодно?") == 0) {
+											  else if (stricmp (s, "погода") == 0 || stricmp (s, "холодно?") == 0 || stricmp (s, "wz") == 0) {
 												  snprintf (temp,sizeof(temp), "/home/olivka/bot/weather.sh");
 												  S ("PRIVMSG %s :%s, %s\n", target, source, run_program (temp));
 											  }
+*/
 
 
 											  
@@ -8481,6 +8560,19 @@ void do_pluginCall(char *target, char *file, char *nick, char *topic)
 	else
 //
 		
+		// weather
+		if (!strcmp(pCommand, "weather"))
+		{
+		  S ("PRIVMSG %s :%s, %s\n", target, nick, run_program ("/home/olivka/bot/weather.sh"));
+		} 
+else
+		if (!strcmp(pCommand, "wfcast"))
+		{
+		  S ("PRIVMSG %s :%s, %s\n", target, nick, run_program ("/home/olivka/bot/pywapi/tomorrow.sh"));
+		}
+	else
+//
+		
 		// "кикбаннах!"
 		if (!strcmp(pCommand, "cbn"))
 		{
@@ -9289,4 +9381,5 @@ void chanserv_log_history(char *source, char *target, char *buf)
     fprintf(p, t);
     fclose(p);
 }
+
 

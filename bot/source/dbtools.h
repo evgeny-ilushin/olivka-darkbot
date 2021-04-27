@@ -89,6 +89,7 @@ typedef struct tagWTFREC
 
 // Basic I/O file
 class _file
+//struct _file
 {
 public:
 	_file() { iofile = NULL; *path = 0; }
@@ -120,6 +121,7 @@ protected:
 };
 
 class _rdbfile : public _file
+//struct _rdbfile : public _file
 {
 public:
 	_rdbfile() : _file() { memset(&header, 0, sizeof(DICTHEADER)); }
@@ -143,6 +145,7 @@ protected:
 };
 
 class _hashfile : public _rdbfile
+//struct _hashfile : public _rdbfile
 {
 public:
 	_hashfile(char *s) : _rdbfile(s) {}
@@ -156,6 +159,7 @@ public:
 };
 
 class _dictfile : public _rdbfile
+//struct _dictfile : public _rdbfile
 {
 public:
 	_dictfile(char *s) : _rdbfile(s) {}
@@ -168,6 +172,7 @@ public:
 };
 
 class _dictfile2 : public _rdbfile
+//struct _dictfile2 : public _rdbfile
 {
 public:
 	_dictfile2(char *s) : _rdbfile(s) {}
@@ -180,6 +185,7 @@ public:
 
 // Simple OneWord container
 class _word
+//struct _word
 {
 public:
 	_word() { clear(); }
@@ -204,6 +210,7 @@ private:
 
 // Lexic parser: sentence
 class _sentence
+//struct _sentence
 {
 public:
 	_sentence() { clear(); }

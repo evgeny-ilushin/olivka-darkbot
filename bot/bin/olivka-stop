@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PID=$(ps -fA | grep "/home/olivka/bot/olivka" | grep -v grep | grep -v nohup | awk '{print $2}')
+
+if [ -z "$PID" ] ; then
+    echo "Not running"
+else
+    echo "Killing $PID"
+    kill -9 $PID
+fi
+
+sleep 1

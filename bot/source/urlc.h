@@ -74,15 +74,6 @@ public:
 
 	bool add(LPURL fu)
 	{
-		if (strlen(fu->href) > 19
-&& (
-!strncmp("http://img.vim-cn.com", fu->href, 21)
-|| !strncmp("http://redip.ru/tg/", fu->href, 19)
-|| !strncmp("http://temp.redip.ru", fu->href, 20)
-|| !strncmp("http://newtemp.redip.ru", fu->href, 23)
-))
-		    return false;
-
 		FILE *f = fopen(m_fn, "a+t");
 		do
 		{
@@ -98,15 +89,6 @@ public:
 
 	bool find(char *url, LPURL fu)
 	{
-		if (strlen(url) > 19 
-&& (
-!strncmp("http://img.vim-cn.com", url, 21)
-|| !strncmp("http://redip.ru/tg/", url, 19)
-|| !strncmp("http://temp.redip.ru", fu->href, 20)
-|| !strncmp("http://newtemp.redip.ru", fu->href, 23)
-))
-		    return false;
-
 		FILE *f = fopen(m_fn, "rt");
 		do
 		{

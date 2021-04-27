@@ -21,7 +21,7 @@ now=`date`
 echo "$now  OLIVKA: forcing restart..."  >> /home/olivka/bot/logs/daemon_stdout.log
 
 cd /home/olivka/bot
-/home/olivka/bot/olivka >> /home/olivka/bot/logs/daemon_stdout.log
+/home/olivka/bot/olivka 2>&1 | tee -a /home/olivka/bot/logs/daemon_stdout.log
 sleep $START_SEC
 
 fi

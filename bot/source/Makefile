@@ -13,14 +13,29 @@
 
 CC = g++
 
-CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -pthread -L /usr/lib32/gcc/i686-linux-gnu/4.5
+#CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 
+#CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -L/usr/lib32/gcc/i686-linux-gnu/4.5
+
+# 2018
+#CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -L/usr/lib32/gcc/i686-linux-gnu/4.5 -dm -pg -g -DDEBUG
+
+# 2020
+#CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -L/usr/lib32/gcc/i686-linux-gnu/4.5 -dm -pg -g -DDEBUG
+
+#CFLAGS = -DFORK -O2 -march=nocona -mtune=nocona -msse2 -mfpmath=sse -ftracer -m32 -dm -pg -g -DDEBUG
+#CFLAGS = -DFORK -m32 -msse2 -mfpmath=sse -dm -pg -g -DDEBUG
+#CFLAGS = -DFORK -O0 -m32 -g -DDEBUG
+#CFLAGS = -DFORK -O1 -m32 -g
+CFLAGS = -DFORK -m32 -O0 -g -L/usr/lib32 -B/usr/lib32
+
 DFLAGS = -dm -pg -g -DDEBUG
+#DFLAGS = -dm -pg -g
 
 D2FLAG = -DDEBUG2 -DFORK
 
 EXE_NAME = olivka
 
-ALL_SRC = darkbot.c translate.c dates.c color.c dbtools.cpp bc.c bc1.c smail/sendmail.c seen.cpp tg.c
+ALL_SRC = darkbot.c translate.c dates.c color.c dbtools.cpp bc.c bc1.c smail/sendmail.c seen.cpp
 
 all: ; ${CC} ${CFLAGS} ${ALL_SRC} -o ${EXE_NAME};
 

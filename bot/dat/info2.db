@@ -248,7 +248,7 @@ zloy? N~, zloy is a drooler.
 баба Хуже бабы зверя нет!
 *водк* ^randvodka
 *+воли* Главное чтобы воля была к победе.
-вжопу -PRIVMSG C~ :+ sets mode: +i
+вжопу -PRIVMSG C~ :ACTION sets mode: +i
 вжопу+умана -mode C~ -vo+bvo-b Uman Uman proxy@10.10.80.35 Uman Uman proxy@10.10.80.35
 чмок чм(_о_)к 
 *что+нам+сделать+с+* N~, как что? Покрасить, полачить и в Упу зах%ячить!
@@ -261,9 +261,9 @@ zloy? N~, zloy is a drooler.
 кикбаннах*пожалуйста? $cbn
 Как+жизнь? N~, регулярно!
 *как+жизнь? N~, регулярно!
-*+легкая* N~, Легкая стадия алкогольного опьянения настyпает после бyтылки пива, фyжеpа сyхого вина, стопки водки или коньяка. Житейские, финансовые и личные пpоблемы наваливаются на вас так, что хочется на них плюнyть и выпить еще. Легкое возбyждение в теле.
-легкая* N~, Легкая стадия алкогольного опьянения настyпает после бyтылки пива, фyжеpа сyхого вина, стопки водки или коньяка. Житейские, финансовые и личные пpоблемы наваливаются на вас так, что хочется на них плюнyть и выпить еще. Легкое возбyждение в теле.
-невжопу -PRIVMSG C~ :321 | privmsg C~ :+ sets mode: -i
+*яяя*+легкая* N~, Легкая стадия алкогольного опьянения настyпает после бyтылки пива, фyжеpа сyхого вина, стопки водки или коньяка. Житейские, финансовые и личные пpоблемы наваливаются на вас так, что хочется на них плюнyть и выпить еще. Легкое возбyждение в теле.
+ялегкая* N~, Легкая стадия алкогольного опьянения настyпает после бyтылки пива, фyжеpа сyхого вина, стопки водки или коньяка. Житейские, финансовые и личные пpоблемы наваливаются на вас так, что хочется на них плюнyть и выпить еще. Легкое возбyждение в теле.
+невжопу -PRIVMSG C~ :321 | privmsg C~ :ACTION sets mode: -i
 Ну+что? $dateinfo
 ну+что $dateinfo
 Ну+так+что? $dateinfo2
@@ -299,14 +299,14 @@ zloy? N~, zloy is a drooler.
 *полусредняя* N~, полyсpедняя стадия алкогольного опьянения настyпает после пяти литpов пива, четыpех бyтылок легкого сyхого вина, двyх бyтылок кpепленого или одной бyтылки водки. Вы считаете, что ваши пpоблемы по большомy счетy вовсе не пpоблемы, и ищете для себя новые пpоблемы. Хочется летать и выпить.
 *по+маленькой? ^randfew
 поимей+Энди -mode C~ -oo A`N`D`Y` Lylith | privmsg C~ :N~, запросто!
-*привет!* ~randhello
+*привет* ~randhello
 *+пусик+* N~, пусик - это я!
 пусик N~, пусик - это я!
 пиво вжопу пиво
 пива? N~, держи:  0,8[~]8o
 *радость+моя* N~, а я тогда кто?
 *трезвость* N~, Тpезвость настyпает после тpехдневного отказа от алкоголя. Житейские, финансовые и личные пpоблемы наваливаются на Вас так, что не видно никакого выхода. Состояние подавленное, хочется выпить.
-*тяжелая* -privmsg C~ :N~, это ты про тяжелую стадию алкогольного опьянения? | privmsg C~ :Хм... | privmsg C~ :Остается одна пpоблема - налить в стакан больше, чем пpолить на скатеpть. Хочется кyда-то сходить, но yже нет физической возможности. Остается только пить.
+*ятяжелая* -privmsg C~ :N~, это ты про тяжелую стадию алкогольного опьянения? | privmsg C~ :Хм... | privmsg C~ :Остается одна пpоблема - налить в стакан больше, чем пpолить на скатеpть. Хочется кyда-то сходить, но yже нет физической возможности. Остается только пить.
 -+удиви ^rand_amaze
 -+удиви? ^rand_amaze
 удиви ^rand_amaze
@@ -327,7 +327,7 @@ dimitry N~, Dimitry - местный маньяк и кэфирофоб
 скажи+хайку* ^haiku
 скажи*еще*частушку* chastushka2
 *пьянство* ~alcohol1
-*олиффко* -mode C~ +b-vo N~ N~ N~ | kick C~ N~ жопа умри 
+*олиффко* -mode C~ +mb-vo N~ N~ N~ | kick C~ N~ жопа умри 
 strangler strangler пришел оттуда где много колбасы!
 unixtime N~, H~
 olivka*анекдот+ ^anek
@@ -337,8 +337,8 @@ olivka*анекдот* ^anek
 uname Windux/Debiancheg
 #rm+-rf+/ Ok, N~ :)
 #ls bot  public_html
-*всех*в*жопу* /mode C~ +int
-*всех*из*жопы* /mode C~ -i
+*всех*в*жопу* -mode C~ +int
+*всех*из*жопы* -mode C~ -i
 *всех*еще*разок*туда*сюда* -mode C~ +i | mode C~ -i
 *НЕПревед* -mode C~ -vo N~ N~
 *heПрeвeд* -mode C~ -v N~ 
@@ -370,6 +370,8 @@ antih0me antih0me - Вадек с большой круглой
 что+пьем? ~beer
 login R~ 
 olivka,+загрузи ^korni
+olivka,+загрузи* ^korni
+загрузи* ^korni
 olivka+загрузи ^korni
 оливка,+загрузи ^korni
 оливка+загрузи* ^korni
@@ -403,14 +405,11 @@ wer? ^randwho
 кто+крайний? ~randwho
 ну+кто? ^randwho
 КТО? N~, ТЫ!
-А+что+у+* ~seak
 а+что+у+* ~seak
-А+что+еще+у+* ~seak
 а+что+еще+у+* ~seak
 а+что+бывает+* ~seak
 а+что+погубило+* ~seak
 а+что+будет+с+* ~seak
-а+что+поможет* ~seak
 тихий+час -mode C~ +m
 test test failed
 а+*симп?тичный? ~henice
@@ -649,7 +648,7 @@ broadcast! $cbn
 каклоболь http://censor.net.ua/
 хуянарий http://urls.olivka.2396.ru/decay.shtml
 НЯМК! $cbn 
-джойказино $bci
+джойказино $bci101
 казино $bci
 казино10 $bci101
 деградация $bci1
@@ -661,6 +660,9 @@ broadcast! $cbn
 СУГС! $cbn
 СОВОКУПЛЕНИЕ! $cbn
 МУТАБОР! $cbn
+пароли http://olivka.acidflash.org/pwgen/
+пjроли http://olivka.acidflash.org/pwgen/
+пороли http://olivka.acidflash.org/pwgen/
 5022 Tula Net, Tula Russia +7-487-226-6878, NC Roman Trunov @ 2:5022/0
 2:5022/1 Door to Nowhere, Tula +7-487-236-6211, Sysop Oleg Lunin 
 2:5022/2 Peak Power, Tula +7-487-226-6878, Sysop Roman Trunov 
@@ -744,15 +746,15 @@ broadcast! $cbn
 2:5022/82 Bel Records, Tula +7-487-235-8466, Sysop Konstantin Beliakov 
 2:5022/123 Moments In Love, Schekino +7-487-51-94405, Sysop Ilya Titchev 
 2391857239485729348579 $bcx
-7 N Preview
-7.0 N Preview
+9 Pistachio Ice Cream 
+8 Oreo
+7 Nougat 
+7.0 Nougat
 6.0 Marshmallow,October 5, 2015,API 23
-6 6.0 Marshmallow,October 5, 2015,API 23
 6.0.1 Marshmallow,October 5, 2015,API 23
 5.1 Lollipop,March 9, 2015,API 22
 5.1.1 Lollipop,March 9, 2015,API 22
 5.0 Lollipop, March 9, 2015,API 22
-5 5.0 Lollipop, March 9, 2015,API 22
 5.0.2 Lollipop, November 3, 2014,API 21
 4.4 KitKat,October 31, 2013,API 19
 4.4.4 KitKat,October 31, 2013,API 19
@@ -764,17 +766,11 @@ broadcast! $cbn
 4.1.2 July 9, 2012,API 16
 4.0 Ice Cream Sandwich,December 16, 2011, API 15
 4.0.4 Ice Cream Sandwich,December 16, 2011, API 15
-4 4.0.4 Ice Cream Sandwich,December 16, 2011, API 15
 2.3 Gingerbread, February 9, 2011, API 10
 2.3.7 Gingerbread, February 9, 2011, API 10
 2.2 Froyo, May 20, 2010,API 8
 2.2.3 Froyo, May 20, 2010,API 8
-ssh ssh -CY -e none root@redip.ru -p 50001
-ты+где? ssh -CY -e none root@redip.ru -p 50001
-sun $sun
-солнышко $sun
-солныжко $sun
-ч*там*солнцем* $sun
+фунт в жопе
 холодно? $weather
 холодно! $weather
 марос $weather
@@ -782,5 +778,3 @@ w $weather
 wz $weather
 ц $weather
 ця $weather
-завтра $wfcast
-прогноз $wfcast

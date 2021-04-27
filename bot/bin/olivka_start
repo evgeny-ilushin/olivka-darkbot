@@ -1,0 +1,15 @@
+#!/bin/bash
+
+PID=$(ps -fA | grep "/home/olivka/bot/olivka" | grep -v grep | grep -v nohup | awk '{print $2}')
+
+if [ -z "$PID" ] ; then
+    echo "$now  Starting OLIVKA..."
+
+    cd /home/olivka/bot
+    su olivka -c 'nohup /home/olivka/bot/olivka 2>&1 >> /home/olivka/bot/logs/olivka_stdout.log &'
+    #su olivka -c 'nohup /home/olivka/bot/olivka 2>&1 | tee -a /home/olivka/bot/logs/olivka_stdout.log &'
+else
+    echo "Already running as $PID"
+fi
+
+

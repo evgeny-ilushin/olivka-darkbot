@@ -1,0 +1,22 @@
+#!/bin/bash
+
+cat mcclookup-mini.csv | while read l; do
+A=$(echo $l | cut -d '|' -f 1);
+B=$(echo $l | cut -d '|' -f 2);
+
+A1=$(echo $A | cut -c 1-3)
+A2=$(echo $A | cut -c 4-6)
+
+SA=${#A2}
+
+    echo "$SA"
+
+if [ $SA -le 1 ] ; then
+    A2=$(echo "0$A2")
+fi
+
+echo "$A -> $A1:$A2:$B"
+
+echo "$A1$A2|$B" >> mcclookup-mini-1.csv
+
+done

@@ -322,7 +322,8 @@
  * are accidently deleted)
  */
 
-#define	MAX_LASTSEEN	2764800 // 604800
+//#define	MAX_LASTSEEN	2764800 // 604800
+#define	MAX_LASTSEEN 315360000 // 10 years
 /**
  * Max length to keep a lastseen (default is
  * one week (in seconds))

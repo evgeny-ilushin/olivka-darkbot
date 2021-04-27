@@ -1,15 +1,15 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides:          olivka
+# Provides:          olivka_daemon_start
 # Required-Start:    $all
 # Required-Stop:
 # Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Default-Stop:
 # Short-Description: Run olivka_daemon
 ### END INIT INFO
 
-LOG=/home/olivka/bot/logs/startup.log
+LOG=/home/olivka/bot/bin/logs/startup.log
 
 echo "Starting OLIVKA daemon..." | tee -a $LOG
-su -c "nice -n 19 nohup /home/olivka/bot/bin/olivka_daemon 2>&1 | tee -a $LOG &" olivka
+su olivka -c "nice -n 19 nohup /home/olivka/bot/bin/olivka_daemon 2>&1 | tee -a $LOG &" olivka
 

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PID=$(ps -fA | grep "/home/olivka/bot/olivka" | grep -v grep | grep -v nohup | awk '{print $2}')
+
+if [ -z "$PID" ] ; then
+    echo "Not running"
+else
+    echo "Running as $PID"
+fi
+
+sleep 1

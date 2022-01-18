@@ -4697,7 +4697,7 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 								  }
 
 
-								  else if (stricmp (s, "ебеня") == 0 || stricmp (s, "geoip") == 0)
+								  else if (stricmp (s, "ебеня") == 0 || stricmp (s, "geo") == 0)
 								  {
 									  s2 = strtok (NULL, "");
 									  
@@ -4812,6 +4812,36 @@ if (!strcmp(target, "#irc") && TG_REPLY)
 									  	{
 									  		S("PRIVMSG %s :%s, \2%s\2: %s\n", target, source, ss2, res_t2);
 									  	}
+									  }
+									  else
+									  {
+									  	S("PRIVMSG %s :%s, not found :/\n", target, source);
+									  	sleep(5);
+									  }
+									  sleep(5);
+								  }
+
+// GEOIP lookup
+								  else if (stricmp (s, "geoip") == 0 || stricmp (s, "где") == 0)
+								  {
+									  s2 = strtok (NULL, "");
+									  
+									  level = check_access(userhost, target, 0, source);
+
+//									  if (level < 4 || s2 == NULL || strlen (s2) > 40 || strpbrk(s2, ", \t\r\n|\'\"><&^*?;:"))
+									  if (s2 == NULL || strlen(s2) < 3 || strpbrk(s2, ", \t\r\n|\'\"`><&^*?/;:~^"))
+									  {
+										  do_randomtopic(target, DONNO_RDB, source, buf);
+										  R;
+									  }
+									  char *ss2 = s2;
+									  trim(&ss2);
+									  
+									  snprintf (temp,sizeof(temp), "/home/olivka/bot/scripts/geoip.sh %s", ss2);
+									  const char *res = run_program(temp);
+									  if (res && strlen(res) > 5)
+									  {
+								  		S("PRIVMSG %s :%s, %s\n", target, source, ss2, res);
 									  }
 									  else
 									  {
